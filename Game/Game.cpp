@@ -3,6 +3,7 @@
 #include "functions.h"
 #include <chrono>
 #include <thread>
+
 using namespace std;
 
 int main()
@@ -10,10 +11,9 @@ int main()
     bool flag_jade = false; //flag that unlocks special dialogue if no name is chosen. Has no effect on endings.
     bool flag_train = false;// flag that unlocks Tot ending
     bool flag_airfield = false; // flag that unlocks the Hunter ending
-    bool flag_airfield_complete = false;
     bool flag_shower = false; // useless flag lol
     int checkpoint = 0; //checkpoint system
-    bool know = false; //flag for optional "true" ending
+    bool know = false; //flag for optional "true" ending. Also unlocks some new dialogue, even in some routes where it doesn't change the ending. Can be enabled by typing "remember" in the title screen.
     string gamestart;
     string firstname;
     string password;
@@ -90,7 +90,11 @@ int main()
                 textdisplayreg("(You choose to ignore the car. As you turn around, you hear the sound of someone calling to you.)");
                 yellowtext("Patroller: ");  textdisplayreg("Hey, who are you?");
             }
-            textdisplayreg("(You turn around and see a young woman dressed in police gear gripping a submachine gun. Any identifying information on her gear is scratched off, replaced with patches sewn with the number 4. Her stressed face calms when she looks at your face for some reason.)");
+
+            if (know) {
+                textdisplayreg("(You turn around and see a young woman dressed in police gear gripping a submachine gun. It's Tot. Any identifying information on her gear is scratched off, replaced with patches sewn with the number 4. Her stressed face calms when she looks at your face.)");
+            }
+            else { textdisplayreg("(You turn around and see a young woman dressed in police gear gripping a submachine gun. Any identifying information on her gear is scratched off, replaced with patches sewn with the number 4. Her stressed face calms when she looks at your face for some reason.)"); }
             yellowtext("Patroller: ");  textdisplayreg("Hmmm? You don't have a patch on you. Ah, did you just wake up?");
             textdisplayreg("(You nod your head.)");
             yellowtext("Patroller: ");  textdisplayreg("So that's how it is. Well this might sound weird, but do you remember anything about your life? Like... your name, maybe?");
@@ -98,7 +102,10 @@ int main()
             textdisplay("(You think about what your name was. From the back of your mind, something unexpectedly comes up. Your name is....)"); textdisplayblue("ENTER YOUR NAME:");
             getline(cin, name); // second decision, decides your name. if left empty, Tot will name you.
             if (name.empty()) { //Special dialogue 1
-                textdisplayreg("(It's no use. No matter how hard you think, you can't remember your name.");
+                if (know) {
+                    textdisplayreg("(You lie to her about not remembering your name.");
+                }
+                else { textdisplayreg("(It's no use. No matter how hard you think, you can't remember your name."); }
                 youtext2(); textdisplayreg("I... can't remember.");
                 yellowtext("Patroller: ");  textdisplayreg("Well, that's to be expected. Do you remember... anything at all?");
                 textdisplayreg("(You shake your head.)");
@@ -114,7 +121,7 @@ int main()
                 yellowtext("Patroller: ");  textdisplayreg("Ah, I guess I should explain everything to you now. For about a month now, people have been suddenly appearing in streets around the city without their memories, just like you. Of course, that includes me as well.");
                 yellowtext("Patroller: ");  textdisplayreg("Usually people manage to remember basic things about themselves, like their skills and past jobs. It's a bit strange to see someone who doesn't remember anything at all. At least, that what I was told when I spawned. I didn't remember anything either. It's nice seeing someone who's just like me. (She seems pleased to have found a comrade.)");
                 textdisplayreg("(You were about to thank her and ask her name before she suddenly interrupts.)");
-                player.name = name;
+                name = player.name;
                 if (!know) {
                     name = firstname; // If the flag for true ending is not unlocked, name will not be remembered next playthrough
                 }
@@ -124,10 +131,13 @@ int main()
                 if (!know) {
                     name = firstname; // If the flag for true ending is not unlocked, name will not be remembered next playthrough
                 }
-                youtext2(); textdisplayname("My name is...", player.name); textdisplayreg(".");
+                youtext2(); textdisplayreg("My name is..." + player.name + ".");
                 textdisplayreg("(You notice her face change in surprise at your answer.)");
                 yellowtext("Patroller: ");  textdisplayreg("Wait, you actually remember your name? Thats... unexpected. Most of us don't remember our names when we wake up. If you remember your name, do you remember anything else? Like your job, family, friends, or any other memories?");
-                textdisplayreg("(You are visibly confused by her constant questioning.)");
+                if (know) {
+                    textdisplayreg("(You resist the urge to give away any important information. You should probably avoid getting her involved.....)");
+                }
+                else { textdisplayreg("(You are visibly overwhelmed by her constant questioning.)"); }
                 yellowtext("Patroller: ");  textdisplayreg("Oh, sorry. I'm asking a lot from someone who just spawned in aren't I? But this is really important, I promise.");
                 textdisplayreg("(You think about it again, but like the last time, its useless. You really can't remember anything besides your name.)");
                 youtext2(); textdisplayreg("Sorry. I can't remember anything at all.");
@@ -152,13 +162,20 @@ int main()
         case 2: youtext2(); textdisplayreg("I want to stay with you."); //Chapter 2a:
             textdisplayreg("(She gives you a wide smile.)");
             yellowtext("Patroller: ");  textdisplayreg("Good choice! Then, " + player.name + ", follow me! I'll lead you to the University. From there, you'll get assigned a job and become a functioning member of our little society.");
-            textdisplayreg("(She starts walking in the direction of the University. You stop for a bit, confused.)");
-            youtext2(); textdisplayreg("Aren't we taking the car?");
-            yellowtext("Patroller: ");  textdisplayreg("The car? That thing doesn't work. We have the keys for it, so it's used for supplies. But there's no gas.");
-            youtext2(); textdisplayreg("That's disappointing.");
-            yellowtext("Patroller: ");  textdisplayreg("(She starts walking again.) Well, not like there's anywhere to go. We're locked inside the city. Beyond the highways are where the monsters live. They're called mimics, because they look like people without the face.");
-            youtext2(); textdisplayreg("That sounds terrifying.");
-            yellowtext("Patroller: ");  textdisplayreg("Well that's what we're for. And the Highway Guards, of course.");
+
+            if (!know) {
+                textdisplayreg("(She starts walking in the direction of the university. You stop for a bit, confused.)");
+                youtext2(); textdisplayreg("Aren't we taking the car?");
+                yellowtext("Patroller: ");  textdisplayreg("The car? That thing doesn't work. We have the keys for it, so it's used for supplies. But there's no gas.");
+                youtext2(); textdisplayreg("That's disappointing.");
+                yellowtext("Patroller: ");  textdisplayreg("(She starts walking again.) Well, not like there's anywhere to go. We're locked inside the city. Beyond the highways are where the monsters live. They're called mimics, because they look like people without the face.");
+                youtext2(); textdisplayreg("That sounds terrifying.");
+                yellowtext("Patroller: ");  textdisplayreg("Well that's what we're for. And the Highway Guards, of course.");
+            }
+            else {
+                textdisplayreg("(She starts walking in the direction of the university.)");
+                textdisplayreg("(You're really doing this again, huh....)");
+            }
             yellowtext("Patroller: ");  textdisplayreg("Oh, I never told you my name did I? How rude of me. My name is Tot.");
             youtext2(); textdisplayreg("Were you a toddler in your past life?");
             chartext(tot);  textdisplayreg("Of course not! I think. Since I didn't remember my name, I had the Professor name me. He named me that because I'm one of the youngest here.");
@@ -208,8 +225,8 @@ int main()
             chartext(aki); textdisplayreg("Alright. You can sleep on the bed with Tot.");
             chartext(tot);  textdisplayreg("Huh?");
             textdisplay("(Tot is making a face you can't quite make out. Is she excited or is she mad? You choose to....)"); textdisplayblue("1. Sleep on the bed | Sleep on the floor   ");
-            choice3a = userinput();
-            if (choice3a == "1") {
+            choice3b = userinput();
+            if (choice3b == "1") {
                 youtext2(); textdisplayreg("Ok. I'll sleep on the bed.");
                 chartext(tot);  textdisplayreg("!!!");
                 chartext(aki); textdisplayreg("Good going, Tot. Someone's actually nice to you.");
@@ -220,7 +237,8 @@ int main()
                 textdisplayreg("(You feel Tot's glare from behind you. You refuse to look back.)");
             }
             chartext(aki); textdisplayreg("Anyway, let's go shower. These outfits really aren't very breathable. You're coming too, " + player.name + ". You look like you spawned 10 feet underground.");
-            textdisplayreg("(You follow the girls to the dorm bathroom. The showers are individual. What were you expecting, hmmmm?)");
+            if (!know) { textdisplayreg("(You follow the girls to the dorm bathroom. The showers are individual... were you expecting something else?)"); }
+            else { textdisplayreg("(You follow the girls to the dorm bathroom. Yet again, the showers are individual.)"); }
             flag_shower = true;
             textdisplayreg("(After finishing up, you meet up with the girls back at the dorm. As soon as you open the door, they start staring at you.)");
             chartext(aki); textdisplayreg("Wow, you're quite the cutie aren't you " + player.name + "? Right, Tot?");
@@ -229,9 +247,9 @@ int main()
             youtext2(); textdisplayreg("Ummm, thanks.");
             chartext(aki); textdisplayreg("Let's get some rest. I heard Professor's planning something big tomorrow.");
 
-            if (choice3a == "1") {
+            if (choice3b == "1") {
                 textdisplayreg("(You climb in bed with Tot.)");
-                chartext(tot);  textdisplayreg("You're really sleeping here, huh...");
+                chartext(tot);  textdisplayreg("You're really sleeping here...");
                 youtext2(); textdisplayreg("Tot.");
                 chartext(tot);  textdisplayreg("...yes?");
                 youtext2(); textdisplayreg("Thanks for finding me.");
@@ -260,12 +278,54 @@ int main()
             chartext(tot);  textdisplayreg("Good morning you two!");
             chartext(aki); textdisplayreg("We're leaving. Get ready, both of you.");
             yellowtext("Tot "); cout << "and "; youtext(player); textdisplayreg("Got it.");
-            textdisplayreg("(You get ready and decide meet at the square. You are the first to arrive. You see the Professor approach you.)");
+            textdisplay("(You walk out of the dorm room. After using the bathroom, where do you go next?)");
+            textdisplayblue("1. Dining room  |  2. Rec room");
+            choice6a = userinput();
+            if (choice6a == "1") {
+                textdisplayreg("(You walk to the dining room to eat breakfast. You see Tot heating up some rations on the table.)");
+                youtext2(); textdisplayreg("Where do even get those things?");
+                chartext(tot);  textdisplayreg("They fall from the sky or something. They're easy to cook too. You just add water!");
+                textdisplayreg("(From the sky?)");
+                youtext2(); textdisplayreg("And the water works here?");
+                chartext(tot);  textdisplayreg("Yea. Most of the university buildings have water and power. Some parts of the city, too. No one knows how, as the power plants are far outside the inner city."); 
+                youtext2(); textdisplayreg("Maybe the mimics run them.");
+                chartext(tot);  textdisplayreg("You joke, but at this point I'm pretty sure that's true. Those things are smarter than they look. They used to attack us, but now they only attack people who get to close. Stay away and you'll be fine. Oh, it's done.");
+                textdisplayreg("(She opens the ration bag and starts nibbling the strange-looking meal like a hampster. You decide to join her and grab a ration bag from the table. You heat it up and it finished after a few minutes.)");
+                textdisplayreg("(It tastes like chicken.....)");
+                textdisplayreg("(Tot finishes eating.)");
+                chartext(tot);  textdisplayreg("Welp, that was pretty good. Anyway, let's meet at the square, " + player.name + ". Don't be late! (She walks out of the room.)");
+                textdisplayreg("(You continue eating. Seriously, what is this? It's not bad though.)");
+            }
+            else {
+                textdisplayreg("(You enter a room labeled 'REC ROOM'. You see Archaea messing with a strange device on a desk.)");
+                youtext2(); textdisplayreg("What's that?");
+                chartext(aki); textdisplayreg("A computer, apparently. But I can't get it to turn on.");
+                youtext2(); textdisplayreg("Isn't it just broken then?");
+                chartext(aki); textdisplayreg("It turned on once yesterday. I'm trying to get it to turn on again.");
+                youtext2(); textdisplayreg("Good luck.");
+                textdisplayreg("(You wander around the Rec Room. You notice a framed picture of Tot, Archaea, and an girl you've never met. They're posing by the car you passed earlier.)");
+                chartext(aki); textdisplayreg("Dammit. This thing might really be broken. (She turns to look at you)");
+                chartext(aki); textdisplayreg("What are you looking at? Oh. (Her expression turns solemn.)");
+                youtext2(); textdisplayreg("Who's this?");
+                chartext(aki); textdisplayreg("That's Cash. She was an accountant. Tot found her and even gave her that name.");
+                youtext2(); textdisplayreg("Was?");
+                chartext(aki); textdisplayreg("She died of disease a week and a half ago. She was immunocompromised. Makes me kick myself for not noticing earlier. Maybe I could've saved her..... (She stays silent for a moment.)");
+                youtext2(); textdisplayreg("Thinking like that will only make you feel worse.");
+                chartext(aki);  textdisplayreg("........you're right. (She pauses for a bit before speaking again.)");
+                chartext(aki);  textdisplayreg("Tot locked herself in our room for a whole 2 days after that. That girl.....");
+                chartext(aki);  textdisplayreg("Anyway, take care of yourself. Don't die.");
+                youtext2(); textdisplayreg("Don't plan on it.");
+                chartext(aki);  textdisplayreg("You better not. We'll meet at the square later today. See ya. (She walks out of the room.)");
+                textdisplayreg("(Tot..... maybe you should be a bit nicer to her next time.)");
+                textdisplayreg("(Suddenly, a beep is heard! You turn and look behind you. The computer screen lights up!)");
+                textdisplayreg("(You look at the screen. It reads 'Insert disc.' It's a CD player....... You decide to leave the room.)");
+            }
+            textdisplayreg("(About an hour later, you arrive at the square. You're the first one here. You see the Professor approach you.)");
             chartext(professor); textdisplayreg(player.name + ". I want to talk to you about something.");
             youtext2(); textdisplayreg("What is it?");
             chartext(professor); textdisplayreg("I think you're perfect for my plan today. Someone new like you shouldn't have any attachement to the temporary government. The thing is, I want to overthrow the Chief.");
             youtext2(); textdisplayreg("And what do you want me to do?");
-            chartext(professor); textdisplayreg("I want you to explore the library. There's something in there I want. I had forgotten about it, but I suddenly remembered when I saw you. There's an unused room in there full of maps. Check them for something useful. That's your assignment. Of course, Archaea and Tot will join you. I would do it myself, if I was capable of fighting those monsters");
+            chartext(professor); textdisplayreg("I want you to explore the library. There's something in there I want. I had forgotten about it, but I suddenly remembered when I saw you. There's an unused room in there full of maps. Check them for something useful. That's your assignment. Of course, Archaea and Tot will join you. I would do it myself, if I was capable of fighting those monsters.");
             textdisplayreg("(You don't have the power nor care enough to refuse his offer.)");
             youtext2(); textdisplayreg("Ok. Got it.");
             chartext(professor); textdisplayreg("Good. Ah, here they come. I'll speak to you again in the evening. (He leaves as Archaea and Tot arrive.)");
@@ -300,7 +360,6 @@ int main()
                 }
                 else goto title;
             }
-
             else {
                 textdisplayreg("(You shoot the mimic in the chest twice. It dies instantly.)");
                 chartext(tot);  textdisplayreg("Wow, impressive.");
@@ -310,8 +369,6 @@ int main()
             textdisplayreg("(You return to the square. The professor comes up and asks you to visit the capitol with your team to ask the chief a final time about leaving. You agree, and take off toward the capitol.)");
             checkpoint = 6;
             break;
-
-
 
         case 6: capitolbreak: textdisplayreg("(You arrive at the capitol, a fancy building close to the University. In front are armed guards, who let you in when you say you have a message for the professor.)");
             chartext(tot);  textdisplayreg("Even the inside is fancy.");
@@ -328,7 +385,7 @@ int main()
             textdisplayreg("(The secretary takes a long look at it before speaking.)");
             chartext(secretary); textdisplayreg("Haha. That's not the train password. That the password to the memory unlocker on Chief's computer, you idiots!..... oops.");
             chartext(chief); textdisplayreg("You dumbass!!!");
-            textdisplayreg("(You and Archaea share a moment of complete understanding as you turn to look at each other. You......)"); textdisplayblue("1. Make a run for the computer  | 2. Don't do anything  ");
+            textdisplayreg("(You and Archaea share a moment of complete understanding as you turn to look at each other. You......)"); textdisplayred("1. Make a run for the computer  | 2. Don't do anything  ");
             choice5a = userinput();
             if (choice5a == "1") {
                 textdisplay("(You both make a run for the computer. The secretary tries to stop you, but Archaea holds her back. The chief is too stunned to even try. The computer lights up. On it, a simple phrase: "); textdisplayblue("[ENTER PASSWORD]:");
@@ -352,7 +409,6 @@ int main()
                         textdisplayreg("(She grabs your hand and leans closer to you.)");
                         chartext(tot);  textdisplayreg("You won't leave me too, will you?");
                         textdisplayreg("You don't know the answer to that question.");
-
                     }
                     textdisplayred("TOT: ESCAPE END | TRUE ENDING UNLOCKED"); //true ending unlocked
                     gameend();
@@ -362,7 +418,6 @@ int main()
                     else goto title;
 
                 }
-
                 else {
                     textdisplayreg("(You.... don't remember the password!?)");
                     chartext(chief); textdisplayreg("You idiots.");
@@ -379,7 +434,7 @@ int main()
 
             else {
                 textdisplayreg("(You run, to the surprise of everyone in the room. Why? You don't know. Maybe it was just a bad feeling)");
-                textdisplayreg("(As you run, you hear the rumbling sound of patrol units nearby. You don't care what they're doing. You just want to be happy. With Tot. And Aki. Unfortunately for you, your life is about to get a whole lot harder.)");
+                textdisplayreg("(As you run, you hear the rumbling sound of patrol units nearby. You don't care what they're doing. You just want to be happy. With Tot and Aki. Unfortunately for you, your life is about to get a whole lot harder.)");
                 textdisplayred("TOT: STAY END");
                 gameend();
                 if (userinput() == "1") {
@@ -405,7 +460,14 @@ int main()
                 textdisplayreg("(You hear the patroller's voice from the distance. Her tone is unexpectedly sad.)");
                 yellowtext("Patroller: ");  textdisplayreg("Please don't die...." + player.name + ".");
             }
-            textdisplay("(After walking a while, you see someone standing in the middle of the road. You can't see them clearly, but they give you a strange feeling. Something about them seems... off.)"); textdisplayblue("1. Walk up to them | 2. Take a detour ");
+            textdisplayreg("(After walking a while, you see someone standing in the middle of the road.)");
+            if (know) {
+                textdisplayreg("(It's a mimic.)");
+            }
+            else { textdisplay("(You can't see them clearly, but they give you a strange feeling. Something about them seems... off.)"); }
+            
+            
+            textdisplayblue("1. Walk up to them | 2. Take a detour ");
             choice3a = userinput();
             if (choice3a == "1") { // Game over 1
                 textdisplayreg("(You walk up to the strange-looking person. Upon closer inspection, you notice blood stains on their shirt.)");
@@ -486,7 +548,7 @@ int main()
             textdisplayreg("(You walk across the bridge into the hotel. He was right. The stench was terrible. You hold your nose and run to the shower room. The shower room? Do hotels have shower rooms? You choose not to think about it.");
             textdisplayreg("(The shower room was just that. You see half-naked men walking around, getting ready for their day. Because this is the only room with running water, the women and men have seperate shower times. Now was the men's time.)");
             if (flag_shower) {
-                textdisplayreg("(Of course, these showers are not individual. You feel conflicted.)");
+                textdisplayreg("(This time, the showers are not individual. You feel conflicted.)");
             }
             textdisplayreg("(You begin to take off whatever it was you were wearing before noticing people's eyes on you.)");
             chartext(riot);  textdisplayreg("Hey, kid. I don't know what your deal is, but you sure you're fine showing that to everyone?");
@@ -703,7 +765,6 @@ int main()
                     chartext(hunter); textdisplayreg("Woooo! Now that's an explosion.");
                     yellowtext("Patroller: "); textdisplayreg("The highway! You... why?");
                     youtext2(); textdisplayreg("Sorry, but I'm leaving here alive. See you someday.");
-                    flag_airfield_complete = true;
                     textdisplayreg("(You ride your bike towards the airfield. From the corner of your eye, you see the patroller dumbfounded. But you have no time to waste.)");
                     textdisplayreg("(You reach the airfield and see Hunter and Riot standing near a helicopter. They're geared up and ready to go.)");
                     chartext(hunter); textdisplayreg("You ready to go?");

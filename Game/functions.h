@@ -115,18 +115,8 @@ void textdisplayred(string text) {
     text = "\x1b[31m" + text + "\x1b[0m";
     textdisplay(text);
 }
-void textdisplayname(string text, string name) { // Displays text. Has a delay for each character.
-    for (int i = 0; i < text.size(); i++) {
-        cout << text[i];
-        this_thread::sleep_for(chrono::milliseconds(10));
-    }
-    for (int i = 0; i < name.size(); i++) {
-        cout << name[i];
-        this_thread::sleep_for(chrono::milliseconds(10));
-    }
-}
 
-// ASCII art
+// ASCII art (from patorjk.com / asciiart.eu )
 void cityscape() {
     cout << R"(
                   \  |  /         ___________
@@ -145,7 +135,6 @@ void cityscape() {
                                  ~~~~~~~~~~~~~      | ||||||| |
 )" << endl;
 }
-
 
 void gameover() {
     cout << R"(
@@ -183,7 +172,7 @@ void title() {
    | | | . ` |  | |  |  _  /   / /\ \| |      | |    | |    \   /  
   _| |_| |\  |  | |  | | \ \  / ____ \ |____ _| |_   | |     | |   
  |_____|_| \_|  |_|  |_|  \_\/_/    \_\_____|_____|  |_|     |_|  
-  ver 1.0                                                                 
+  ver 1.1                                                                 
                  1. Start Game    2. Exit
                 (Enter a number to continue)                        )" << endl;
 }
