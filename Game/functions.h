@@ -157,7 +157,7 @@ void gameover() {
   \_____/_/    \_\_|  |_|______|  \____/   \/   |______|_|  \_\
                                                                
                                                                
-     Return to title?    1. Yes     2. Exit Game)" << endl;
+      1. Resume from last chapter    2. Return to title)" << endl;
 }
 
 void gameend() {
@@ -168,7 +168,9 @@ void gameend() {
  | | |_ | / /\ \ | |\/| |  __|   |  __| | . ` | |  | |
  | |__| |/ ____ \| |  | | |____  | |____| |\  | |__| |
   \_____/_/    \_\_|  |_|______| |______|_| \_|_____/ 
-                                                      
+
+
+      1. Resume from last chapter    2. Return to title                                      
                                                       )" << endl;
 }
 
@@ -181,7 +183,7 @@ void title() {
    | | | . ` |  | |  |  _  /   / /\ \| |      | |    | |    \   /  
   _| |_| |\  |  | |  | | \ \  / ____ \ |____ _| |_   | |     | |   
  |_____|_| \_|  |_|  |_|  \_\/_/    \_\_____|_____|  |_|     |_|  
-  ver 0.1                                                                 
+  ver 1.0                                                                 
                  1. Start Game    2. Exit
                 (Enter a number to continue)                        )" << endl;
 }
