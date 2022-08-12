@@ -13,6 +13,7 @@ President – Leader of the city. Controls city supplies and commands everyone. 
 Secretary – President’s secretary. An airhead.
 
 # Text:
+**Make sure your Windows terminal application supports ANSI escape codes for color text.**\
 Yellow text signifies a character.\
 Green text refers to player character. \
 Blue text signifies a tutorial or decision. \
